@@ -24,6 +24,24 @@ class AliasModuleDocumenter(autodoc.ModuleDocumenter):
     priority = 10 + autodoc.ModuleDocumenter.priority
     option_spec = dict(autodoc.ModuleDocumenter.option_spec)
 
+    def import_object(self, raiseerror: bool = False) -> bool:
+        ret = super().import_object(raiseerror)
+        if not ret:
+            return ret
+        if type(self.object).__name__ != "module":
+            if raiseerror:
+                raise ValueError(sphinx_i18n.__("aliasmodule '%s' should be package") % self.fullname)
+            else:
+                autodoc.logger.warning(sphinx_i18n.__("aliasmoudle '%s' should be package") % self.fullname, type='autodoc')
+                return False
+        if self.object.__file__.endswith('/__init__.py'):
+            return True
+        if raiseerror:
+            raise ValueError(sphinx_i18n.__("aliasmodule '%s' should be package") % self.fullname)
+        else:
+            autodoc.logger.warning(sphinx_i18n.__("aliasmoudle '%s' should be package") % self.fullname, type='autodoc')
+        return False
+
     def get_object_members(self, want_all: bool) -> Tuple[bool, autodoc.ObjectMembers]:
         _, members = super().get_object_members(want_all)
         prefix = f"{self.object.__name__}."
@@ -39,7 +57,7 @@ class AliasModuleDocumenter(autodoc.ModuleDocumenter):
 
 class AliasDocumenter(autodoc.ModuleLevelDocumenter):
     objtype = 'alias'
-    directivetype = autodoc.DataDocumenter
+    directivetype = autodoc.DataDocumenter.objtype
     priority = 100000000
 
     @classmethod
