@@ -1,2 +1,2 @@
 # sphinx-expose-init-alias
-Generate doc of exposed stuff in __init__.py  as alias
+Generate doc of exposed stuff in \_\_init\_\_.py  as alias
