@@ -1,14 +1,11 @@
-name: Main
+name: Release
 
 on:
-  push:
-    branches:
-      - main
-
-  workflow_dispatch:
+  release:
+    types: [published]
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -19,8 +16,8 @@ jobs:
         run: pip install hatch
       - name: build
         run: hatch build
-      - uses: actions/upload-artifact@v3
+      - name: publish
+        uses: pypa/gh-action-pypi-publish
         with:
-          name: dist-$GITHUB_SHA
-          path: dist
-          retention-days: 7
+          user: __token__
+          password: ${{ secrets.PYPI_TOKEN }}
