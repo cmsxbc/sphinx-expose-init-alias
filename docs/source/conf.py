@@ -9,10 +9,12 @@ import sys
 
 sys.path.insert(0, "../")
 
+import sphinx_expose_init_alias.__about__
+
 project = 'sphinx_expose_init_alias'
 copyright = '2022, cmsxbc'
 author = 'cmsxbc'
-release = '0.0.1'
+release = str(sphinx_expose_init_alias.__about__.__version__)
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

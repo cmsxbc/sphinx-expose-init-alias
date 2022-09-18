@@ -8,6 +8,7 @@ from sphinx_expose_init_alias.documenter import AliasFunctionDocumenter
 from sphinx_expose_init_alias.documenter import AliasExceptionDocumenter
 from sphinx_expose_init_alias.callback import maybe_skip_member
 from sphinx_expose_init_alias.exception import SEIAValueError
+from sphinx_expose_init_alias.__about__ import __version__
 
 
 def setup(app: sphinx_app):
@@ -18,3 +19,6 @@ def setup(app: sphinx_app):
     app.add_autodocumenter(AliasFunctionDocumenter)
     app.add_autodocumenter(AliasExceptionDocumenter)
     app.connect('autodoc-skip-member', maybe_skip_member)
+    return {
+        "version": __version__
+    }

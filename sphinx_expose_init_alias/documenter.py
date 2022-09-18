@@ -89,7 +89,7 @@ class AliasFunctionDocumenter(AliasDocumenter):
         if not AliasDocumenter.can_document_member(member, membername, isattr, parent):
             return False
         ret = autodoc.FunctionDocumenter.can_document_member(member.member, membername, isattr, parent)
-        print("hehe", member.member, membername, ret)
+        autodoc.logger.debug("%s, %s, is function: %s", membername, member.member, ret)
         return ret
 
 
@@ -102,7 +102,9 @@ class AliasClassDocumenter(AliasDocumenter):
     def can_document_member(cls, member: Any, membername: str, isattr: bool, parent: Any) -> bool:
         if not AliasDocumenter.can_document_member(member, membername, isattr, parent):
             return False
-        return autodoc.ClassDocumenter.can_document_member(member.member, membername, isattr, parent)
+        ret = autodoc.ClassDocumenter.can_document_member(member.member, membername, isattr, parent)
+        autodoc.logger.debug("%s, %s, is class: %s", membername, member.member, ret)
+        return ret
 
 
 class AliasExceptionDocumenter(AliasDocumenter):
@@ -114,4 +116,6 @@ class AliasExceptionDocumenter(AliasDocumenter):
     def can_document_member(cls, member: Any, membername: str, isattr: bool, parent: Any) -> bool:
         if not AliasDocumenter.can_document_member(member, membername, isattr, parent):
             return False
-        return autodoc.ExceptionDocumenter.can_document_member(member.member, membername, isattr, parent)
+        ret = autodoc.ExceptionDocumenter.can_document_member(member.member, membername, isattr, parent)
+        autodoc.logger.debug("%s, %s, is exception: %s", membername, member.member, ret)
+        return ret
