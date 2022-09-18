@@ -4,6 +4,8 @@ import docutils.statemachine as doc_sm
 import sphinx.ext.autodoc as autodoc
 import sphinx.locale as sphinx_i18n
 
+from .exception import SEIAValueError
+
 
 class AliasMember:
     def __init__(self, member):
@@ -30,14 +32,14 @@ class AliasModuleDocumenter(autodoc.ModuleDocumenter):
             return ret
         if type(self.object).__name__ != "module":
             if raiseerror:
-                raise ValueError(sphinx_i18n.__("aliasmodule '%s' should be package") % self.fullname)
+                raise SEIAValueError(sphinx_i18n.__("aliasmodule '%s' should be package") % self.fullname)
             else:
                 autodoc.logger.warning(sphinx_i18n.__("aliasmoudle '%s' should be package") % self.fullname, type='autodoc')
                 return False
         if self.object.__file__.endswith('/__init__.py'):
             return True
         if raiseerror:
-            raise ValueError(sphinx_i18n.__("aliasmodule '%s' should be package") % self.fullname)
+            raise SEIAValueError(sphinx_i18n.__("aliasmodule '%s' should be package") % self.fullname)
         else:
             autodoc.logger.warning(sphinx_i18n.__("aliasmoudle '%s' should be package") % self.fullname, type='autodoc')
         return False
@@ -75,3 +77,41 @@ class AliasDocumenter(autodoc.ModuleLevelDocumenter):
         more_content = doc_sm.StringList([sphinx_i18n._('alias of %s') % alias], source='')
         for line, src in zip(more_content.data, more_content.items):
             self.add_line(line, src[0], src[1])
+
+
+class AliasFunctionDocumenter(AliasDocumenter):
+    objtype = 'aliasfunction'
+    directivetype = autodoc.FunctionDocumenter.objtype
+    priority = AliasDocumenter.priority + 2
+
+    @classmethod
+    def can_document_member(cls, member: Any, membername: str, isattr: bool, parent: Any) -> bool:
+        if not AliasDocumenter.can_document_member(member, membername, isattr, parent):
+            return False
+        ret = autodoc.FunctionDocumenter.can_document_member(member.member, membername, isattr, parent)
+        print("hehe", member.member, membername, ret)
+        return ret
+
+
+class AliasClassDocumenter(AliasDocumenter):
+    objtype = 'aliasclass'
+    directivetype = autodoc.ClassDocumenter.objtype
+    priority = AliasDocumenter.priority + 1
+
+    @classmethod
+    def can_document_member(cls, member: Any, membername: str, isattr: bool, parent: Any) -> bool:
+        if not AliasDocumenter.can_document_member(member, membername, isattr, parent):
+            return False
+        return autodoc.ClassDocumenter.can_document_member(member.member, membername, isattr, parent)
+
+
+class AliasExceptionDocumenter(AliasDocumenter):
+    objtype = 'aliasexception'
+    directivetype = autodoc.ExceptionDocumenter.objtype
+    priority = AliasDocumenter.priority + 10
+
+    @classmethod
+    def can_document_member(cls, member: Any, membername: str, isattr: bool, parent: Any) -> bool:
+        if not AliasDocumenter.can_document_member(member, membername, isattr, parent):
+            return False
+        return autodoc.ExceptionDocumenter.can_document_member(member.member, membername, isattr, parent)

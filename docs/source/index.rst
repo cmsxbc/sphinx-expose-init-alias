@@ -10,7 +10,9 @@ Welcome to sphinx_expose_init_alias's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   callback
    documenter
+   exception
 
 
 .. autoaliasmodule:: sphinx_expose_init_alias
