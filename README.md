@@ -25,6 +25,9 @@ from .a import foo
 But the `foo` in `lib/__init__.py` will only occur in docs when use `sphinx.ext.autodoc` if we put it in the `__all__` in `lib/__init__.py`.
 And wrose thing is that the content is just like a stuff defined in `lib/__init__.py`, which is a bit confused and duplicated.
 
+## Demo
+
+See this repo's github pages: [sphinx-expose-init-alias Docs](https://cmsxbc.github.io/sphinx-expose-init-alias/)
 
 ## Usage
 
