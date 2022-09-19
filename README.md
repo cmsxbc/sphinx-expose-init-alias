@@ -1,4 +1,7 @@
 # sphinx-expose-init-alias
+![pypi](https://img.shields.io/pypi/v/sphinx-expose-init-alias)
+[![Main](https://github.com/cmsxbc/sphinx-expose-init-alias/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/cmsxbc/sphinx-expose-init-alias/actions/workflows/main.yml)
+
 Generate doc of exposed stuff in \_\_init\_\_.py  as alias
 
 ## What-Is-Wanted
