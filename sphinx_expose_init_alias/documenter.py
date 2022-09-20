@@ -50,12 +50,17 @@ class AliasModuleDocumenter(autodoc.ModuleDocumenter):
         prefix = f"{self.object.__name__}."
         ret = []
         has_type = not self.config.sphinx_expose_init_alias_as_attr
+        with_not_alias = self.config.sphinx_expose_init_alias_with_not_alias
         for member in members:
-            if member.skipped:
-                continue
             if not hasattr(member[1], "__module__"):
+                if with_not_alias:
+                    ret.append(member)
                 continue
             if not member[1].__module__.startswith(prefix):
+                if with_not_alias:
+                    ret.append(member)
+                continue
+            if member.skipped:
                 continue
             ret.append(wrap_member(member, has_type))
         return False, ret

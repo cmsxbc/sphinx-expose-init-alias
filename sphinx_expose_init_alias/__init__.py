@@ -23,6 +23,7 @@ def setup(app: sphinx_app.Sphinx):
     app.setup_extension('sphinx.ext.autodoc')  # Require autodoc extension
     app.add_config_value("sphinx_expose_init_alias_as_attr", False, True)
     app.add_config_value("sphinx_expose_init_alias_show_description", False, True)
+    app.add_config_value("sphinx_expose_init_alias_with_not_alias", False, True)
     app.add_autodocumenter(AliasDocumenter)
     app.add_autodocumenter(AliasModuleDocumenter)
     app.add_autodocumenter(AliasClassDocumenter)

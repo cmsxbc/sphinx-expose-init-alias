@@ -30,6 +30,7 @@ exclude_patterns = []
 autodoc_typehints = "both"
 sphinx_expose_init_alias_as_attr = False
 sphinx_expose_init_alias_show_description = False
+sphinx_expose_init_alias_with_not_alias = False
 
 
 
