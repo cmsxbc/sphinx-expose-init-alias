@@ -27,6 +27,10 @@ extensions = [
 templates_path = ['_templates']
 exclude_patterns = []
 
+autodoc_typehints = "both"
+sphinx_expose_init_alias_as_attr = False
+sphinx_expose_init_alias_show_description = False
+
 
 
 # -- Options for HTML output -------------------------------------------------

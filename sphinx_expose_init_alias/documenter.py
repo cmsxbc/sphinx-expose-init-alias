@@ -8,16 +8,17 @@ from .exception import SEIAValueError
 
 
 class AliasMember:
-    def __init__(self, member):
+    def __init__(self, member, has_type=False):
         self._member = member
+        self.has_type = has_type
 
     @property
     def member(self):
         return self._member
 
 
-def wrap_member(obj_member: autodoc.ObjectMember):
-    return autodoc.ObjectMember(obj_member[0], AliasMember(obj_member[1]), *obj_member[2:])
+def wrap_member(obj_member: autodoc.ObjectMember, has_type=True):
+    return autodoc.ObjectMember(obj_member[0], AliasMember(obj_member[1], has_type), *obj_member[2:])
 
 
 class AliasModuleDocumenter(autodoc.ModuleDocumenter):
@@ -48,18 +49,19 @@ class AliasModuleDocumenter(autodoc.ModuleDocumenter):
         _, members = super().get_object_members(want_all)
         prefix = f"{self.object.__name__}."
         ret = []
+        has_type = not self.config.sphinx_expose_init_alias_as_attr
         for member in members:
             if not hasattr(member[1], "__module__"):
                 continue
             if not member[1].__module__.startswith(prefix):
                 continue
-            ret.append(wrap_member(member))
+            ret.append(wrap_member(member, has_type))
         return False, ret
 
 
 class AliasDocumenter(autodoc.ModuleLevelDocumenter):
     objtype = 'alias'
-    directivetype = autodoc.DataDocumenter.objtype
+    directivetype = autodoc.AttributeDocumenter.objtype
     priority = 100000000
 
     @classmethod
@@ -68,6 +70,11 @@ class AliasDocumenter(autodoc.ModuleLevelDocumenter):
 
     def get_object_members(self, want_all: bool) -> Tuple[bool, autodoc.ObjectMembers]:
         return False, []
+
+    def format_signature(self, **kwargs: Any) -> str:
+        if self.config.sphinx_expose_init_alias_as_attr:
+            return ''
+        return super().format_signature(**kwargs)
 
     def add_content(self, more_content: Optional[doc_sm.StringList]) -> None:
         if self.config.autodoc_typehints_format == "short":
@@ -88,6 +95,8 @@ class AliasFunctionDocumenter(AliasDocumenter):
     def can_document_member(cls, member: Any, membername: str, isattr: bool, parent: Any) -> bool:
         if not AliasDocumenter.can_document_member(member, membername, isattr, parent):
             return False
+        if not member.has_type:
+            return False
         ret = autodoc.FunctionDocumenter.can_document_member(member.member, membername, isattr, parent)
         autodoc.logger.debug("%s, %s, is function: %s", membername, member.member, ret)
         return ret
@@ -102,6 +111,8 @@ class AliasClassDocumenter(AliasDocumenter):
     def can_document_member(cls, member: Any, membername: str, isattr: bool, parent: Any) -> bool:
         if not AliasDocumenter.can_document_member(member, membername, isattr, parent):
             return False
+        if not member.has_type:
+            return False
         ret = autodoc.ClassDocumenter.can_document_member(member.member, membername, isattr, parent)
         autodoc.logger.debug("%s, %s, is class: %s", membername, member.member, ret)
         return ret
@@ -115,6 +126,8 @@ class AliasExceptionDocumenter(AliasDocumenter):
     @classmethod
     def can_document_member(cls, member: Any, membername: str, isattr: bool, parent: Any) -> bool:
         if not AliasDocumenter.can_document_member(member, membername, isattr, parent):
+            return False
+        if not member.has_type:
             return False
         ret = autodoc.ExceptionDocumenter.can_document_member(member.member, membername, isattr, parent)
         autodoc.logger.debug("%s, %s, is exception: %s", membername, member.member, ret)

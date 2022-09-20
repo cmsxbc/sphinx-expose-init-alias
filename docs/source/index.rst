@@ -15,6 +15,9 @@ Welcome to sphinx_expose_init_alias's documentation!
    exception
 
 
+Alias
+-----
+
 .. autoaliasmodule:: sphinx_expose_init_alias
    :members:
 
